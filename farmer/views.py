@@ -1,5 +1,18 @@
 from django.shortcuts import render,HttpResponse,redirect
 from django.contrib.auth import authenticate, login, logout
+from .forms import UserCreationForm,FarmerCreationForm
+
+
+def addFarmer(request):
+    user_form = UserCreationForm()
+    farmer_form = FarmerCreationForm()
+    return render(request,'farmer/addfarmer.html',
+    {
+        'u_form':user_form,
+        'f_form':farmer_form
+    
+    })
+
 
 
 def loginfarmer(request):
