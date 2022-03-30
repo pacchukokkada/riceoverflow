@@ -66,10 +66,11 @@ def addQuestion(request):
         'q_form': question_form
     }) 
 
+
 def showQuestion(request):
     question = Question.objects.all()
     return render(request,'farmer/showQuestion.html',{'questions':question})
-
+@login_required
 def addAnswer(request,q_id):
     instance=get_object_or_404(Question,id=q_id)
    
@@ -81,4 +82,8 @@ def addAnswer(request,q_id):
     answer = AnswerForm()
     return render(request,'farmer/addAnswer.html',{'answer':answer})
 
+def deleteQuestion(request,id):
+    question = get_object_or_404(Question,id=id)
+    question.delete()
+    return redirect('Home')
 
