@@ -1,0 +1,18 @@
+{% extends 'farmer/base.html' %}
+{% load widget_tweaks %}
+{% block content %}
+<h1> Questions</h1>
+
+<form action="" method="post">
+{% csrf_token %}
+{% for question in questions %}
+
+<h3>{{question.question}}</h3>
+<h3>{{question.description}}</h3>
+<a href="{% url 'AddAnswer' question.id %}" class="btn btn-primary">Answer the question</a>
+<br>
+{% endfor %}
+
+</form>
+{% endblock content %}
+   

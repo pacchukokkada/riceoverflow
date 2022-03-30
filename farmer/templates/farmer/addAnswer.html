@@ -1,0 +1,17 @@
+{% extends 'farmer/base.html' %}
+{% load widget_tweaks %}
+{% block content %}
+<h1>Add Answer</h1>
+
+<form action="" method="post">
+{% csrf_token %}
+{% comment %} {% for ans in answer %}
+{{ ans.label}}
+{{ans|add_class:'form-control'}}
+<br>
+{% endfor %} {% endcomment %}
+<textarea name="answer" cols="40" rows="10" maxlength="100" class="form-control" required="" id="id_description"></textarea>
+<input type="submit" class="btn btn-primary" value="Submit">
+</form>
+{% endblock content %}
+   

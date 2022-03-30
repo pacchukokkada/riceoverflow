@@ -1,8 +1,8 @@
-from django.shortcuts import render,HttpResponse,redirect
+from django.shortcuts import render,HttpResponse,redirect,get_object_or_404
 from django.contrib.auth import authenticate, login, logout
-from .forms import FarmerCreationForm,UserCreationForm
+from .forms import FarmerCreationForm,UserCreationForm,QuestionForm,AnswerForm
 from django.contrib.auth.decorators import login_required
-
+from .models import Answer, Question
 
 
 def addFarmer(request):
@@ -54,4 +54,31 @@ def home(request):
 
 @login_required
 def addQuestion(request):
-    return render(request,'farmer/addQuestion.html') 
+    if request.method == 'POST':
+        question_form = QuestionForm(request.POST)
+        if question_form.is_valid():
+            question = question_form.save(commit=False)
+            question.user = request.user
+            question.save()
+            return redirect('Home')
+    question_form = QuestionForm()
+    return render(request,'farmer/addQuestion.html',{
+        'q_form': question_form
+    }) 
+
+def showQuestion(request):
+    question = Question.objects.all()
+    return render(request,'farmer/showQuestion.html',{'questions':question})
+
+def addAnswer(request,q_id):
+    instance=get_object_or_404(Question,id=q_id)
+   
+    if request.method == 'POST':
+        answer = request.POST.get('answer')
+        ans = Answer.objects.create(question=instance,user=request.user,answer=answer)
+        ans.save()
+        return redirect('Home')
+    answer = AnswerForm()
+    return render(request,'farmer/addAnswer.html',{'answer':answer})
+
+

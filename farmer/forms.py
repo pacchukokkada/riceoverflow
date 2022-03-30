@@ -1,3 +1,4 @@
+from pyexpat import model
 from django import forms
 from .models import Farmer,Question,Answer
 from django.contrib.auth.models import User
@@ -25,4 +26,14 @@ class FarmerCreationForm(forms.ModelForm):
         model = Farmer
         fields = ('phone','place','taluk','district','state','pincode','crops')
         widgets ={}
+
+class QuestionForm(forms.ModelForm):
+    class Meta:
+        model = Question
+        fields = ('question','description')
+
+class AnswerForm(forms.ModelForm):
+    class Meta:
+        model = Answer
+        fields = ('answer',)
         

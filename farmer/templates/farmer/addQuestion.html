@@ -1,6 +1,16 @@
 {% extends 'farmer/base.html' %}
-
+{% load widget_tweaks %}
 {% block content %}
-<h1>Add farmer</h1>
+<h1>Add Question</h1>
+
+<form action="" method="post">
+{% csrf_token %}
+{% for qf in q_form %}
+{{ qf.label}}
+{{qf|add_class:'form-control'}}
+<br>
+{% endfor %}
+<input type="submit" class="btn btn-primary" value="Ask Question">
+</form>
 {% endblock content %}
    
