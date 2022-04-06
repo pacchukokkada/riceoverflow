@@ -1,8 +1,8 @@
 from django.shortcuts import render,HttpResponse,redirect,get_object_or_404
 from django.contrib.auth import authenticate, login, logout
-from .forms import FarmerCreationForm,UserCreationForm,QuestionForm,AnswerForm
+from .forms import FarmerCreationForm,UserCreationForm,QuestionForm,AnswerForm,FarmerUpdateForm
 from django.contrib.auth.decorators import login_required
-from .models import Answer, Question
+from .models import Answer, Question,Farmer
 
 
 def addFarmer(request):
@@ -26,8 +26,38 @@ def addFarmer(request):
     
     })
 
+def updateFarmer(request,id):
+    farmer = Farmer.objects.get(id=id)
+    user = farmer.user
+    if request.method == 'POST':
+        user_form = FarmerUpdateForm(request.POST,instance=user)
+        farmer_form = FarmerCreationForm(request.POST,instance=farmer)
+        if user_form.is_valid() and farmer_form.is_valid():
+            user = user_form.save()
+            farmer = farmer_form.save(commit=False)
+            farmer.user = user
+            farmer.save()
+            return redirect('Home')
+        else:
+            print(user_form.errors)
+            print(farmer_form.errors)
 
+    user_form = FarmerUpdateForm(instance=user)
+    farmer_form =FarmerCreationForm(instance=farmer)
+    return render(request,'farmer/addfarmer.html',{
+        'u_form':user_form,
+        'f_form':farmer_form,
+    }
+    )
 
+def deleteFarmer(request,id):
+    farmer = Farmer.objects.get(id=id)
+    if request.user.is_superuser:
+        farmer.user.delete()
+        return redirect('Home')
+    else:
+        return HttpResponse("Your not a admin")
+    
 def loginfarmer(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -87,6 +117,8 @@ def deleteQuestion(request,id):
     
     question.delete()
     return redirect('Home')
+
+    
 
 
 

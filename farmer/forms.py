@@ -1,3 +1,4 @@
+from dataclasses import field
 from pyexpat import model
 from django import forms
 from .models import Farmer,Question,Answer
@@ -26,6 +27,16 @@ class FarmerCreationForm(forms.ModelForm):
         model = Farmer
         fields = ('phone','place','taluk','district','state','pincode','crops')
         widgets ={}
+
+class FarmerUpdateForm(forms.ModelForm):
+    email = forms.EmailField(required=True)
+    first_name = forms.CharField(max_length=20)
+    last_name = forms.CharField(max_length=20)
+    class Meta:
+        model = User
+        fields = ("username","first_name","last_name" ,"email")
+
+        
 
 class QuestionForm(forms.ModelForm):
     class Meta:
