@@ -69,21 +69,24 @@ def addQuestion(request):
 
 def showQuestion(request):
     question = Question.objects.all()
-    return render(request,'farmer/showQuestion.html',{'questions':question})
+    return render(request,'farmer/ex.html',{'questions':question})
 @login_required
 def addAnswer(request,q_id):
-    instance=get_object_or_404(Question,id=q_id)
+    question=get_object_or_404(Question,id=q_id)
    
     if request.method == 'POST':
         answer = request.POST.get('answer')
-        ans = Answer.objects.create(question=instance,user=request.user,answer=answer)
+        ans = Answer.objects.create(question=question,user=request.user,answer=answer)
         ans.save()
         return redirect('Home')
-    answer = AnswerForm()
-    return render(request,'farmer/addAnswer.html',{'answer':answer})
+    return render(request,'farmer/addAnswer.html',)
 
+#deleting questions
 def deleteQuestion(request,id):
     question = get_object_or_404(Question,id=id)
+    
     question.delete()
     return redirect('Home')
+
+
 
