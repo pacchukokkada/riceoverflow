@@ -79,7 +79,8 @@ def farmerLogout(request):
 
 
 def home(request):
-    return render(request,'farmer/home.html')
+    all_questions = Question.objects.all()
+    return render(request,'farmer/home.html',{'questions':all_questions})
 
 
 @login_required
@@ -96,6 +97,15 @@ def addQuestion(request):
         'q_form': question_form
     }) 
 
+def updateQuestion(request,id):
+    question = Question.objects.get(id=id)
+    if request.method == 'POST':
+        question_form = QuestionForm(request.POST,instance=question)
+        if question_form.is_valid():
+            question.save()
+            return redirect('Homet')
+    question_form = QuestionForm(instance=question)
+    return render(request,'farmer/addQuestion.html',{'q_form':question_form})
 
 def showQuestion(request):
     question = Question.objects.all()
@@ -110,6 +120,16 @@ def addAnswer(request,q_id):
         ans.save()
         return redirect('Home')
     return render(request,'farmer/addAnswer.html',)
+
+def updateAnswer(request, id):
+    answer = Answer.objects.get(id=id)
+    if request.method == 'POST':
+        answer_form = AnswerForm(request.POST,instance=answer)
+        if answer_form.is_valid():
+            answer_form.save()
+            return redirect('Home')
+    answer_form = AnswerForm(instance=answer)
+    return render(request,'farmer/updateAnswer.html',{'answer_form':answer_form})
 
 #deleting questions
 def deleteQuestion(request,id):

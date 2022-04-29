@@ -1,7 +1,75 @@
 {% extends 'farmer/base.html' %}
+{% load static %}
 
 {% block content %}
-<h1>Home Page</h1>
-<h2>Welcome</h2>
+<td style="width:100%; float: left;">
+    <div class="heading">
+        <div class="tab">
+            <p>All Questions</p>	
+        </div>
+    </div>
+
+<div class="welcome">
+    <div class="tab">
+        <a href="{% url "Home" %}" style="color: #8c97b4;"><p class="{{ home }}"" style="display:inline-block;">Latest</p></a>
+        <a href="{% url "Home" %}" style="color: #8c97b4;"><p class="{{ home_views }}"" style="display: inline-block;">Views</p></a>
+    </div>
+</div>
+
+
+{% if messages %}
+<div class="messages">
+    {% for message in messages %}
+    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{message}}</p>
+    {% endfor %}
+</div>
+{% endif %}
+
+
+{% for question in questions %}
+<div class="question">
+    <div class="left">
+        <h6 style="font-size: 16px;" class="ques"><strong><a href='{% url "Home"  %}' style="text-decoration: none;color:#444c63;">{{ question.question | linebreaks | truncatechars:50 }}</a></strong></h6>
+        <h6 style="font-size: 15px; font-weight: normal; color: #6f7d95;" class="des">{{ question.description | truncatechars:50 }}</h6>
+        {% if question.user.image %}
+        <img src='{{ question.user.image.url }}' id="image"/>
+        {% else %}
+        <img src='{% static "farmer/image/default_user.png" %}' id="image"/>
+        {% endif %}
+        <h6 style="font-size: 14px; font-weight: normal; color: #6f7d95;" class="des1"><a href="{% url "Home"  %}" style="text-decoration: none;color: #6f7d95;">{{ obj.user }}</a> &nbsp &nbsp {{ obj.timestamp }}</h6>
+    </div>
+    <div class="right">
+        <div class="circle" style="display: inline-block;"><h6>{{ question.views }}</h6><p>Views</p></div>
+        {% if obj.answered == 0 %}
+        <div class="circle" style="display: inline-block;"><h6>{{ question.answer }}</h6><p>Answers</p></div>
+        {% else %}
+        <div class="circle" style="display: inline-block;"><h6 style="background-color: #1abc9c;color: white; border:none;">{{ obj.answers }}</h6><p>Answers</p></div>
+        {% endif %}
+    </div>
+
+</div>
+{% endfor %}
+<br/><br/>
+<div class="page" style="width: 79%;">
+    {% if object_list.has_previous %}
+    <a href="?page={{ object_list.previous_page_number }} & q={{ request.GET.q }}"><i class="fa fa-chevron-left" aria-hidden="true" style="background-color: #1abc9c;color: white; border:none;"></i></a>
+    {% else %}
+    <a><i class="fa fa-chevron-left" aria-hidden="true"></i></a>
+    {% endif %}
+    <span class="current">
+    &nbsp Page {{ object_list.number }} of {{ object_list.paginator.num_pages }}. &nbsp
+    </span>
+    {% if object_list.has_next %}
+    <a href="?page={{ object_list.next_page_number }} & q={{ request.GET.q }}" ><i class="fa fa-chevron-right " aria-hidden="true" style="background-color: #1abc9c;color: white; border:none;"></i></a>
+    {% else %}
+    <a><i class="fa fa-chevron-right " aria-hidden="true"></i></a>
+    {% endif %}
+</div>
+
+
+</td>
+
 {% endblock content %}
-   
+
+
+

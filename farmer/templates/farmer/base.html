@@ -1,57 +1,107 @@
-<!DOCTYPE html>
-<html lang="en">
+{% load static %}
+<!--DOCTYPE html-->
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- CSS only -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" 
-integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <title>Document</title>
+<title>Riceoverflow</title>
+<link rel='stylesheet' href='{% static "farmer/css/index.css" %}'>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="icon" href="{% static 'farmer/image/logo1.ico' %}">
 </head>
-<body>
-    <div class="container">
-        
-    
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Navbar</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-      
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-              <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Link</a>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Dropdown
-              </a>
-              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Another action</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Something else here</a>
-              </div>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link disabled" href="#">Disabled</a>
-            </li>
-          </ul>
-          <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-          </form>
-        </div>
-      </nav>
 
-    {% block content %}
-    
-    {% endblock content %}
-</div>
+<body>
+	<div class="navbar">
+		<div class="logo">
+			<img src='{% static "farmer/image/Logo.jpg" %}' style="width: 230px; margin-top: 10px;" />
+		</div>
+		<div class="search">
+			<div style="margin-top: 22px; margin-left: 22.5%;">
+			<form method='GET' action=''>
+			<input type='text' name='q' placeholder='Search questions' value='{{request.GET.q }}' id="search1"/>
+
+			<button type='submit' id="search2"><i class="fa fa-search" aria-hidden="true"></i></button>
+			</form>
+			</div>
+		</div>
+		<div class="navlinks">
+			<h6><a href="{% url "Home" %}">Home</a></h6> <h6 style="width: 30%;"><a href="{% url "Home" %}">Ask a Question</a></h6> <h6><a href="{% url "Home" %}">Profile</a></h6> <h6><a href="{% url "Home" %}">Users</a></h6> <h6><a>Contact</a></h6>
+		</div>
+		<div class="login" style="font-size: 15px;">
+			{% if request.user.is_authenticated %}
+			<p><a href="{% url "Home" %}"><i class="fa fa-sign-out" aria-hidden="true"></i> Log out</a></p>
+			{% else %}
+			<p><a href="{% url "login" %}"><i class="fa fa-sign-in" aria-hidden="true"></i> Log in / Register</a></p>
+			{%endif %}
+		</div>
+	</div>
+
+	<div class="main">
+		<div class="links">
+			<div id="ask-cont">
+			<a href="{% url "Home" %}" style="text-decoration: none;"><p class="ask"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp Ask a Question</p></a>
+			</div>
+			{% if request.user.is_authenticated %}
+			<p style="color: #3498db;text-align: center;">Hey, {{ request.user }} !!</p>
+			{% if profile.image %}
+			<img src='{{ profile.image.url }}' id="image1"/>
+			{% else %}
+			<img src='{% static "farmer/image/default_user.png" %}' id="image1"/>
+			{% endif %}
+			<div class="rank">
+			<p style="background-color: #3498db; border:none;color: white">Amateur</p>
+			<p {% if profile.points >= 100 %}
+			style="background-color: #1abc9c; border:none;color:white;" 
+			{% endif %}>Trainee</p>
+			<p {% if profile.points >= 1000 %}
+			style="background-color: gold; border:none;" 
+			{% endif %}>Professor</p>
+			<p {% if profile.points >= 2000 %}
+			style="background-color: red; border:none;color:white;" 
+			{% endif %}>Legend</p>
+			<div id="myProgress">
+				<h6 style="float: left;margin-left: 35%;margin-top: 2px;">{{ val }}</h6>
+			  <div id="myBar" style="width: {{ percent }}%"></div>
+			</div>
+			</div>
+			
+			{% endif %}
+			
+
+		</div>
+		<div class="content">
+			<table style="width: 100%;border-spacing: 0px;min-height: 100%;">
+				<tr>
+			{% block content %}
+
+      {% endblock content %}
+
+
+
+			
+			<td class="stats" style="padding-top: 30px;vertical-align: top;">
+				<div class="bor" style="border-left-color: #3498db">
+					<p class="stat_q">Questions</p>
+					<p class="stat_a">{{ q }}</p>
+				</div>
+				<div class="bor" style="border-left-color: #f39c12;">
+					<p class="stat_q">Answers</p>
+					<p class="stat_a">{{ a }}</p>
+				</div>
+				<div class="bor" style="border-left-color: red;">
+					<p class="stat_q">Users</p>
+					<p class="stat_a">{{ u }}</p>
+				</div>
+				<div class="bor" style="border:none; padding-top: 40px;">
+					<p>Top users</p>
+					{% for obj in top %}
+					<p class="stat_q"><a  href="{% url "Home" %}" style="color: #6f7daf;text-decoration: none;">{{ obj.user }} ({{obj.points}})</a></p>
+					{% endfor %}
+				</div>
+			</td>
+		</tr>
+		</table>
+		</div>
+	</div>
+  {% block script %}
+  {% endblock script %}
 </body>
 </html>
